@@ -48,12 +48,22 @@ def upload_fileMessages():
     '''
     for mensaje in contenidoarchivo.findall('.//MENSAJE'):
         for date in mensaje.findall('FECHA'):
+            fecha= [{"fecha": date.text}]
+            print(fecha)
+        for Text in mensaje.findall('TEXTO'):
+            texto= [{"mensaje": Text.text}]
+            print(texto)
+    
+    
+
+    '''for mensaje in contenidoarchivo.findall('.//MENSAJE'):
+        for date in mensaje.findall('FECHA'):
             fecha.append(date.text)
             print(fecha)
         for Text in mensaje.findall('TEXTO'):
             texto.append(Text.text)
             print(texto)
-    
+    '''
     '''if resultadosMostrar:
         return jsonify(resultadosMostrar)
     else:
