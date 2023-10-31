@@ -14,7 +14,7 @@ def myform_view(request):
         
         try:
             files = {"file": (file.name, file.read())}
-            response = requests.post('http://127.0.0.1:5000/upload_fileConfig2', data={"data": data}, files=files)
+            response = requests.post('http://127.0.0.1:5000/upload_fileMessages', data={"data": data}, files=files)
             response.raise_for_status()
 
             #Procesa la respuesta del backend
