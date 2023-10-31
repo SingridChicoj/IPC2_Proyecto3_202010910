@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -5,6 +6,10 @@
 </head>
 <body>
     <h1>Formulario en Django</h1>
+
+    <!---Iniciar listas!--->
+    <button type="button" id="IniciarListas">Iniciarlizar</button>
+
     <form method="post" id="myform" enctype="multipart/form-data">
         {% csrf_token %}
         <input type="file" id="fileInput" name="file" accept=".xml"/>
@@ -18,6 +23,9 @@
         <textarea id="responseText2" rows="10" cols="50"></textarea>
         <button type="button" id="getResponseButton2">Obtener respuesta de flask 2</button>
     </div>
+    
+    <button type="button" id="mostrarImagenButton">Mostrar imagen</button>
+    <img src="{% static 'besos.png' %}" id = "imagenMostrada" width="200" height="150">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function(){
@@ -52,6 +60,13 @@
             $("#getResponseButton2").click(function(){
                 $.get("/myapp/get_response2", function(response){
                     $("#responseText2").val(response.message);
+                });
+            });
+            
+            //Para imagenes
+            $(document).ready(function(){
+                $("#mostrarImagenButton").click(function(){
+                    $("#imagenMostrada").toggle();
                 });
             });
         })

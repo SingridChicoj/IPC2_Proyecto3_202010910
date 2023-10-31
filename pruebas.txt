@@ -1,0 +1,28 @@
+@app.route('/upload_fileConfig', methods=['POST'])
+def upload_file():
+    global positivos
+    global negativos
+
+    if 'file' not in request.files:
+        return jsonify({"message": "No se ha enviado un archivo"})
+
+    archivo = request.files['file']
+    try:
+        xml_data = archivo.read()
+        root = ET.fromstring(xml_data)
+        for sentimiento in root:
+            if sentimiento.tag == 'sentimientos_positivos':
+                for palabra in sentimiento.findall('palabra'):
+                    positivos.append({"palabra": palabra.text})
+            elif sentimiento.tag == 'sentimientos_negativos':
+                for palabra in sentimiento.findall('palabra'):
+                    negativos.append({"palabra": palabra.text})
+
+        if positivos:
+            return jsonify(positivos)
+        elif negativos:
+            return jsonify(negativos)
+        else:
+            return jsonify({"message": "No se encontraron mensajes en el archivo XML"})
+    except ET.ParseError:
+        return jsonify({"error": "Error al analizar el archivo XML"})

@@ -1,14 +1,13 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 <diccionario>
     <sentimientos_positivos>
-        <palabra> bueno </palabra>
+        <palabra> emocionado </palabra>
         <palabra> excelente </palabra>
-        <palabra> cool </palabra>
-        <palabra> sastifecho </palabra>
+        <palabra> genial </palabra>
+        <palabra> alegre </palabra>
     </sentimientos_positivos>
     <sentimientos_negativos>
-        <palabra> malo </palabra>
-        <palabra> pÃ©simo </palabra>
+        <palabra> mal </palabra>
         <palabra> triste </palabra>
         <palabra> molesto </palabra>
         <palabra> decepcionado </palabra>
