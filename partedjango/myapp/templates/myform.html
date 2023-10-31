@@ -23,7 +23,10 @@
         <textarea id="responseText2" rows="10" cols="50"></textarea>
         <button type="button" id="getResponseButton2">Obtener respuesta de flask 2</button>
     </div>
-    
+    <div id="response3">
+        <textarea id="responseText3" rows="10" cols="50"></textarea>
+        <button type="button" id="getResponseButton3">Obtener respuesta de flask 3</button>
+    </div>
     <button type="button" id="mostrarImagenButton">Mostrar imagen</button>
     <img src="{% static 'besos.png' %}" id = "imagenMostrada" width="200" height="150">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -62,7 +65,11 @@
                     $("#responseText2").val(response.message);
                 });
             });
-            
+            $("#getResponseButton3").click(function(){
+                $.get("/myapp/get_response3", function(response){
+                    $("#responseText3").val(response.message);
+                });
+            });
             //Para imagenes
             $(document).ready(function(){
                 $("#mostrarImagenButton").click(function(){

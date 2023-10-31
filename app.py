@@ -13,21 +13,14 @@ resultadosMostrar = []
 positivos = []
 negativos = []
 
-@app.route('/upload_file',methods=['POST'])
-def upload_file():
-    if 'file' not in request.files:
-        return jsonify({
-        "message": "No se ha enviado un archivo, intente de nuevo :("
-        })
-    file = request.files['file']
-    # leer el contenido del archivo
-    # Ahora el contenido lo convertimos a un string
-    file_contents=file.read().decode('utf-8')
-    # Print del contenido
-    print(file_contents)
+@app.route('/reset',methods=['DELETE'])
+def resetear():
+    resultadosMostrar.clear()
+    positivos.clear()
+    negativos.clear()
     return jsonify({
-        "message": "El archivo fue cargado exitosamente y fue leido:)"
-    })  
+        "message": "Se limpiaron las listas"
+    })
 
 
 @app.route('/upload_fileMessages', methods=['POST'])
@@ -77,11 +70,15 @@ def upload_fileConfig2():
         "positivos": positivos,
         "negativos" : negativos
     }
+
+    '''response_data = {
+        "message": "Archivo leido"
+    }'''
     return jsonify(response_data)
 
 
 @app.route('/obMensajes', methods=['GET'])
-def get_response_from_flask():
+def obtenerMensajes():
     global resultadosMostrar
     response_data={
         "messages": resultadosMostrar
@@ -89,12 +86,19 @@ def get_response_from_flask():
     return jsonify(response_data)
 
 @app.route('/obConfig', methods=['GET'])
-def get_response_from_flask2():
+def obtenerConfiguracion():
     global positivos
     global negativos
     response_data={
         "Spositivos": positivos,
         "Snegativos" : negativos
+    }
+    return jsonify(response_data)
+
+@app.route('/ayuda', methods=['GET'])
+def ayuda():
+    response_data={
+        "message":"Datos del estudiante:\nSingrid Cristabel Chicoj Martinez\n202010910\nIntroduccion a la Programacion y Computacion 2 Seccion D\nLink: https://github.com/SingridChicoj/IPC2_Proyecto3_202010910.git"
     }
     return jsonify(response_data)
 
