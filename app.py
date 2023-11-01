@@ -15,7 +15,8 @@ texto = []
 positivos = []
 negativos = []
 
-@app.route('/reset',methods=['DELETE'])
+
+@app.route('/reset', methods=['DELETE'])
 def resetear():
     fecha.clear()
     texto.clear()
@@ -40,20 +41,24 @@ def upload_fileMessages():
         })
     archivo = request.files['file']
     contenidoarchivo = ET.fromstring(archivo.read().decode('utf-8'))
-    #print(contenidoarchivo)
+    # print(contenidoarchivo)
 
     for mensaje in contenidoarchivo.findall('.//MENSAJE'):
         for date in mensaje.findall('FECHA'):
-            fecha= [{"fecha": date.text}]
-            print(fecha)
-        for Text in mensaje.findall('TEXTO'):
-            texto= [{"mensaje": Text.text}]
-            print(texto)
+            fecha.append({"fecha": date.text})
+    print(fecha)
+
+    for mensaje in contenidoarchivo.findall('.//MENSAJE'):
+        for Texto in mensaje.findall('TEXTO'):
+            texto.append({"texto": Texto.text})
+    print(texto)
 
     response_data = {
-        "message": "Archivo leido"
+        "fecha": fecha,
+        "texto": texto
     }
     return jsonify(response_data)
+
 
 @app.route('/upload_fileConfig2', methods=['POST'])
 def upload_fileConfig2():
@@ -73,51 +78,115 @@ def upload_fileConfig2():
 
     for sentimiento in contenido.findall('.//sentimientos_positivos'):
         for palabra in sentimiento.findall('palabra'):
-            positivos.append({"palabra": palabra.text})
+            positivos.append(palabra.text)
     print(positivos)
 
     for sentimiento in contenido.findall('.//sentimientos_negativos'):
         for palabra in sentimiento.findall('palabra'):
-            negativos.append({"palabra": palabra.text})
+            negativos.append(palabra.text)
     print(negativos)
 
-    '''response_data = {
-        "positivos": positivos,
-        "negativos" : negativos
-    }
-'''
     response_data = {
-        "message": "Archivo leido"
+        "positivos": positivos,
+        "negativos": negativos
     }
+
+    '''response_data = {
+        "message": "Archivo leido"
+    }'''
     return jsonify(response_data)
 
+
+@app.route('/consultarHas', methods=['GET'])
+def consultarHas():
+    global fecha
+    global texto
+    fechaHAS = request.args.get('fecha')
+    datos = []
+    buffer = ""
+    state = 0
+    contador = 0
+
+    for i in range(len(fecha)):
+        if fecha[i].get('fecha') == fechaHAS:
+            datos.append(texto[i].get('texto'))
+            for c in texto[i].get('texto'):
+                if state == 0:
+                    if c == "#":
+                        buffer += c
+                        state = 1
+                        continue
+                if state == 1:
+                    if c != "#":
+                        buffer += c
+                        continue
+                    else:
+                        buffer += c
+                        state = 0
+                        continue
+            print(buffer, "+", contador)
+    return jsonify(buffer)
+
+@app.route('/consultarMenc', methods=['GET'])
+def consultarMenc():
+    global fecha
+    global texto
+    fechaHAS = request.args.get('fecha')
+    datos = []
+    buffer = ""
+    state = 0
+    contador = 0
+
+    for i in range(len(fecha)):
+        if fecha[i].get('fecha') == fechaHAS:
+            datos.append(texto[i].get('texto'))
+            for c in texto[i].get('texto'):
+                if state == 0:
+                    if c == "@":
+                        buffer += c
+                        state = 1
+                        continue
+                if state == 1:
+                    if c != " ":
+                        buffer += c
+                        continue
+                    else:
+                        buffer += c
+                        state = 0
+                        continue
+            print(buffer)
+            #print(buffer, "+", contador)
+    return jsonify(buffer)
 
 @app.route('/obMensajes', methods=['GET'])
 def obtenerMensajes():
     global fecha
     global texto
-    response_data={
-        "messagesF": fecha, 
+    response_data = {
+        "messagesF": fecha,
         "messagesT": texto
     }
     return jsonify(response_data)
+
 
 @app.route('/obConfig', methods=['GET'])
 def obtenerConfiguracion():
     global positivos
     global negativos
-    response_data={
+    response_data = {
         "Spositivos": positivos,
-        "Snegativos" : negativos
+        "Snegativos": negativos
     }
     return jsonify(response_data)
 
+
 @app.route('/ayuda', methods=['GET'])
 def ayuda():
-    response_data={
-        "message":"Datos del estudiante:\nSingrid Cristabel Chicoj Martinez\n202010910\nIntroduccion a la Programacion y Computacion 2 Seccion D\nLink: https://github.com/SingridChicoj/IPC2_Proyecto3_202010910.git"
+    response_data = {
+        "message": "Datos del estudiante:\nSingrid Cristabel Chicoj Martinez\n202010910\nIntroduccion a la Programacion y Computacion 2 Seccion D\nLink: https://github.com/SingridChicoj/IPC2_Proyecto3_202010910.git"
     }
     return jsonify(response_data)
+
 
 if __name__ == "__main__":
     app.run(threaded=True, port=5000, debug=True)

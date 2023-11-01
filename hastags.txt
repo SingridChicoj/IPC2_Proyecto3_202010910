@@ -1,0 +1,9 @@
+<FECHA>15/10/2023</FECHA>
+<TEXTO> Si sale el proyecto 3, estoy emocionado, que genial #sisale# #vacas# @elaux @proyecto</TEXTO>
+<FECHA>15/10/2023</FECHA>
+<TEXTO> Probando positivas, excelente y alegre #holamundo# @Cobrakai</TEXTO>
+<FECHA>15/10/2023</FECHA>
+<TEXTO> Estoy decepcionado del proyecto, y eso me causa enojo @enojadito #enojo#</TEXTO>
+
+#sisale# #vacas# #holamundo# #enojo#
+@elaux @proyecto @Cobrakai @enojadito

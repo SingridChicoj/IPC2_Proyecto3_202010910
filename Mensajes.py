@@ -1,5 +1,4 @@
 class Mensajes:
-    def __init__(self, fecha, menciones, hashtag):
+    def __init__(self, fecha, texto):
         self.fecha = fecha
-        self.menciones = menciones
-        self.hashtag = hashtag
+        self.texto = texto

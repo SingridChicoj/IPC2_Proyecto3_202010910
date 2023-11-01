@@ -1,4 +1,4 @@
 class Sentimientos:
-    def __init__(self, palabra, tipo):
-        self.palabra = palabra
-        self.tipo = tipo
+    def __init__(self, positivo, negativo):
+        self.positivo = positivo
+        self.negativo = negativo
