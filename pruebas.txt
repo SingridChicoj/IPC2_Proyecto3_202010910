@@ -26,3 +26,39 @@ def upload_file():
             return jsonify({"message": "No se encontraron mensajes en el archivo XML"})
     except ET.ParseError:
         return jsonify({"error": "Error al analizar el archivo XML"})
+
+
+
+    '''for mensaje in contenidoarchivo.findall('.//MENSAJE'):
+        for date in mensaje.findall('FECHA'):
+            fecha.append(date.text)
+            print(fecha)
+        for Text in mensaje.findall('TEXTO'):
+            texto.append(Text.text)
+            print(texto)
+    '''
+    '''if resultadosMostrar:
+        return jsonify(resultadosMostrar)
+    else:
+        return jsonify({"message": "No se encontraron mensajes en el archivo XML"})
+'''
+
+    '''resultadosMostrar = [{
+            "fecha": mensaje.find('FECHA').text,
+            "mensaje": mensaje.find('TEXTO').text
+        } for mensaje in contenidoarchivo.findall('.//MENSAJE')]
+    '''
+
+    '''for mensaje in contenidoarchivo.findall('.//MENSAJE'):
+        for date in mensaje.findall('FECHA'):
+            fecha.append(date.text)
+            print(fecha)
+        for Text in mensaje.findall('TEXTO'):
+            texto.append(Text.text)
+            print(texto)
+    '''
+    '''if resultadosMostrar:
+        return jsonify(resultadosMostrar)
+    else:
+        return jsonify({"message": "No se encontraron mensajes en el archivo XML"})
+'''

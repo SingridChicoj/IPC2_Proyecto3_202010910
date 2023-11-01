@@ -39,13 +39,9 @@ def upload_fileMessages():
             "message": "No se ha enviado un archivo"
         })
     archivo = request.files['file']
-    #print(contenidoarchivo)
     contenidoarchivo = ET.fromstring(archivo.read().decode('utf-8'))
-    '''resultadosMostrar = [{
-            "fecha": mensaje.find('FECHA').text,
-            "mensaje": mensaje.find('TEXTO').text
-        } for mensaje in contenidoarchivo.findall('.//MENSAJE')]
-    '''
+    #print(contenidoarchivo)
+
     for mensaje in contenidoarchivo.findall('.//MENSAJE'):
         for date in mensaje.findall('FECHA'):
             fecha= [{"fecha": date.text}]
@@ -53,22 +49,6 @@ def upload_fileMessages():
         for Text in mensaje.findall('TEXTO'):
             texto= [{"mensaje": Text.text}]
             print(texto)
-    
-    
-
-    '''for mensaje in contenidoarchivo.findall('.//MENSAJE'):
-        for date in mensaje.findall('FECHA'):
-            fecha.append(date.text)
-            print(fecha)
-        for Text in mensaje.findall('TEXTO'):
-            texto.append(Text.text)
-            print(texto)
-    '''
-    '''if resultadosMostrar:
-        return jsonify(resultadosMostrar)
-    else:
-        return jsonify({"message": "No se encontraron mensajes en el archivo XML"})
-'''
 
     response_data = {
         "message": "Archivo leido"
