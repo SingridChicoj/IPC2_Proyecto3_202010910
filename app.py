@@ -1,4 +1,7 @@
+import sys
+import os
 import xml.etree.ElementTree as ET
+
 from flask import Flask, jsonify, request, render_template
 from flask_cors import CORS
 
@@ -11,6 +14,7 @@ global positivos
 global negativos
 global Chashtags
 global Cmenciones
+global fechaHAS
 
 
 fecha = []
@@ -19,6 +23,7 @@ positivos = []
 negativos = []
 Chashtags = 0
 Cmenciones = 0
+fechaHAS = ""
 
 
 @app.route('/reset', methods=['POST'])
@@ -107,6 +112,7 @@ def consultarHas():
     global fecha
     global texto
     global Chashtags
+    global fechaHAS
 
     fechaHAS = request.args.get('fecha')
     datos = []
@@ -133,7 +139,6 @@ def consultarHas():
                         if buffer == buffer:
                             Chashtags += 1
                         continue
-            print(buffer, "+" , Chashtags)
     return jsonify(buffer)
 
 @app.route('/consultarMenc', methods=['GET'])
@@ -166,8 +171,6 @@ def consultarMenc():
                         menciones += c
                         state = 0
                         continue
-            print(menciones)
-            print(menciones, "+", Cmenciones)
     return jsonify(menciones)
 
 @app.route('/consultarSentimientos', methods=['GET'])
@@ -233,16 +236,17 @@ def escritura_xml():
     global texto
     global Chashtags
     global Cmenciones
+    global fechaHAS
     contador = 0
 
     mens_recibidos = ET.Element("MENSAJES_RECIBIDOS")
     Rtiempo = ET.SubElement(mens_recibidos, "TIEMPO")
     for i in range(len(fecha)):
-        if fecha == fecha[i].get('fecha'):
+        if fechaHAS == fecha[i].get('fecha'):
             contador += 1
             print(contador)
     lista_fecha = ET.SubElement(Rtiempo, "FECHA")
-    lista_fecha.text = str(fecha)
+    lista_fecha.text = str(fechaHAS)
     lista_mensajes = ET.SubElement(Rtiempo, "MSJ_RECIBIDOS")
     lista_mensajes.text = str(contador)
     lista_menciones = ET.SubElement(Rtiempo, "USR_MENCIONADOS")
@@ -271,6 +275,26 @@ def pretty(element, indent = '    '):
                 element.tail = '\n' + indent * (level - 1)
             cola[0:0] = hijos
 
+@app.route('/grafica', methods=['GET'])
+def grafica():
+    f = open('bb.dot', 'w')
+
+    text = """
+        digraph G {fontname="Helvetica,Arial,sans-serif"
+        node [fontname="Helvetica,Arial,sans-serif"]
+        edge [fontname="Helvetica,Arial,sans-serif"]
+        a0 [shape=none label=<
+        <TABLE border="0" cellspacing="10" cellpadding="10" style="rounded" bgcolor="#9fdbe6:#7678bc" gradientangle="315">\n
+        <TR><TD bgcolor="#ca8bf5:#3e4160">Consultar hashtags</TD>
+        <TD bgcolor="#ca8bf5:#3e4160">Consultar menciones</TD></TR>"""
+
+    text += """</TABLE>>];
+                }\n"""
+    f.write(text) 
+    f.close()
+    os.environ["PATH"] += os.pathsep + 'C:\Program Files\Graphviz\bin'
+    os.system('dot -Tpng bb.dot -o static\grafo.png')
+    print("Terminado")        
 
 if __name__ == "__main__":
     app.run(threaded=True, port=5000, debug=True)
