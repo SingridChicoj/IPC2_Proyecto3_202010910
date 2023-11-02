@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<MENSAJES_RECIBIDOS>
+    <TIEMPO>
+        <FECHA>[{'fecha': '15/10/2023'}, {'fecha': '15/10/2023'}, {'fecha': '16/10/2023'}, {'fecha': '17/10/2023'}, {'fecha': '16/10/2023'}, {'fecha': '15/10/2023'}, {'fecha': '26/10/2023'}]</FECHA>
+        <MSJ_RECIBIDOS>0</MSJ_RECIBIDOS>
+        <USR_MENCIONADOS>4</USR_MENCIONADOS>
+        <HASH_INCLUIDOS>5</HASH_INCLUIDOS>
+    </TIEMPO>
+</MENSAJES_RECIBIDOS>

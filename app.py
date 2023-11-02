@@ -9,11 +9,16 @@ global fecha
 global texto
 global positivos
 global negativos
+global Chashtags
+global Cmenciones
+
 
 fecha = []
 texto = []
 positivos = []
 negativos = []
+Chashtags = 0
+Cmenciones = 0
 
 
 @app.route('/reset', methods=['POST'])
@@ -101,11 +106,13 @@ def upload_fileConfig2():
 def consultarHas():
     global fecha
     global texto
+    global Chashtags
+
     fechaHAS = request.args.get('fecha')
     datos = []
     buffer = ""
     state = 0
-    contador = 0
+    Chashtags = 0
 
     for i in range(len(fecha)):
         if fecha[i].get('fecha') == fechaHAS:
@@ -123,40 +130,45 @@ def consultarHas():
                     else:
                         buffer += c
                         state = 0
+                        if buffer == buffer:
+                            Chashtags += 1
                         continue
-            print(buffer, "+", contador)
+            print(buffer, "+" , Chashtags)
     return jsonify(buffer)
 
 @app.route('/consultarMenc', methods=['GET'])
 def consultarMenc():
     global fecha
     global texto
+    global Cmenciones
+
     fechaHAS = request.args.get('fecha')
     datos = []
-    buffer = ""
+    menciones = ""
     state = 0
-    contador = 0
-
+    Cmenciones = 0
+    
     for i in range(len(fecha)):
         if fecha[i].get('fecha') == fechaHAS:
             datos.append(texto[i].get('texto'))
             for c in texto[i].get('texto'):
                 if state == 0:
                     if c == "@":
-                        buffer += c
+                        menciones += c
                         state = 1
+                        Cmenciones += 1
                         continue
                 if state == 1:
                     if c != " ":
-                        buffer += c
+                        menciones += c
                         continue
                     else:
-                        buffer += c
+                        menciones += c
                         state = 0
                         continue
-            print(buffer)
-            #print(buffer, "+", contador)
-    return jsonify(buffer)
+            print(menciones)
+            print(menciones, "+", Cmenciones)
+    return jsonify(menciones)
 
 @app.route('/consultarSentimientos', methods=['GET'])
 def consultarSentimientos():
@@ -214,6 +226,50 @@ def ayuda():
         "message": "Datos del estudiante:\nSingrid Cristabel Chicoj Martinez\n202010910\nIntroduccion a la Programacion y Computacion 2 Seccion D\nLink: https://github.com/SingridChicoj/IPC2_Proyecto3_202010910.git"
     }
     return jsonify(response_data)
+
+@app.route('/escribirxml', methods=['POST'])
+def escritura_xml():
+    global fecha
+    global texto
+    global Chashtags
+    global Cmenciones
+    contador = 0
+
+    mens_recibidos = ET.Element("MENSAJES_RECIBIDOS")
+    Rtiempo = ET.SubElement(mens_recibidos, "TIEMPO")
+    for i in range(len(fecha)):
+        if fecha == fecha[i].get('fecha'):
+            contador += 1
+            print(contador)
+    lista_fecha = ET.SubElement(Rtiempo, "FECHA")
+    lista_fecha.text = str(fecha)
+    lista_mensajes = ET.SubElement(Rtiempo, "MSJ_RECIBIDOS")
+    lista_mensajes.text = str(contador)
+    lista_menciones = ET.SubElement(Rtiempo, "USR_MENCIONADOS")
+    lista_menciones.text = str(Cmenciones)
+    lista_hashtag = ET.SubElement(Rtiempo, "HASH_INCLUIDOS")
+    lista_hashtag.text = str(Chashtags)
+
+    #General xml
+    my_data = ET.tostring(mens_recibidos)
+    my_data = str(my_data)
+    pretty(mens_recibidos)
+    arbol_xml = ET.ElementTree(mens_recibidos)
+    arbol_xml.write('resumenMensajes.xml', encoding="UTF-8", xml_declaration=True)
+
+
+def pretty(element, indent = '    '):
+        cola = [(0, element)]
+        while cola:
+            level, element = cola.pop(0)
+            hijos = [(level + 1, hijo) for hijo in list(element)]
+            if hijos:
+                element.text = '\n' + indent * (level + 1)
+            if cola:
+                element.tail = '\n' + indent * cola[0][0]
+            else:
+                element.tail = '\n' + indent * (level - 1)
+            cola[0:0] = hijos
 
 
 if __name__ == "__main__":
