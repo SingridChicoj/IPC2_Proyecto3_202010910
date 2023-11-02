@@ -16,7 +16,7 @@ positivos = []
 negativos = []
 
 
-@app.route('/reset', methods=['DELETE'])
+@app.route('/reset', methods=['POST'])
 def resetear():
     fecha.clear()
     texto.clear()
@@ -46,12 +46,12 @@ def upload_fileMessages():
     for mensaje in contenidoarchivo.findall('.//MENSAJE'):
         for date in mensaje.findall('FECHA'):
             fecha.append({"fecha": date.text})
-    print(fecha)
+    #print(fecha)
 
     for mensaje in contenidoarchivo.findall('.//MENSAJE'):
         for Texto in mensaje.findall('TEXTO'):
             texto.append({"texto": Texto.text})
-    print(texto)
+    #print(texto)
 
     response_data = {
         "fecha": fecha,
@@ -79,12 +79,12 @@ def upload_fileConfig2():
     for sentimiento in contenido.findall('.//sentimientos_positivos'):
         for palabra in sentimiento.findall('palabra'):
             positivos.append(palabra.text)
-    print(positivos)
+    #print(positivos)
 
     for sentimiento in contenido.findall('.//sentimientos_negativos'):
         for palabra in sentimiento.findall('palabra'):
             negativos.append(palabra.text)
-    print(negativos)
+    #print(negativos)
 
     response_data = {
         "positivos": positivos,
@@ -157,6 +157,34 @@ def consultarMenc():
             print(buffer)
             #print(buffer, "+", contador)
     return jsonify(buffer)
+
+@app.route('/consultarSentimientos', methods=['GET'])
+def consultarSentimientos():
+    global fecha
+    global texto
+    global positivos
+    global negativos
+    fechaHAS = request.args.get('fecha')
+    datos = []
+    consp = 0
+    palabra = ""
+
+    for i in range(len(fecha)):
+        if fecha[i].get('fecha') == fechaHAS:
+            datos.append(texto[i].get('texto'))
+            for c in texto[i].get('texto'):
+                if c != " ":
+                    if c == ",":
+                        c = ""
+                    palabra += c
+                else:
+                    #print(palabra)
+                    for i in range(len(positivos)):
+                        if palabra == positivos[i]:
+                            consp += 1
+                            print(palabra)
+                    palabra = ""
+    return jsonify(datos)
 
 @app.route('/obMensajes', methods=['GET'])
 def obtenerMensajes():
