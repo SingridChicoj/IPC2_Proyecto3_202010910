@@ -285,7 +285,6 @@ def escritura_xml():
     for i in range(len(fecha)):
         if fechaHAS == fecha[i].get('fecha'):
             contador += 1
-            print(contador)
     lista_fecha = ET.SubElement(Rtiempo, "FECHA")
     lista_fecha.text = str(fechaHAS)
     lista_mensajes = ET.SubElement(Rtiempo, "MSJ_RECIBIDOS")
@@ -318,6 +317,9 @@ def pretty(element, indent = '    '):
 
 @app.route('/grafica', methods=['GET'])
 def grafica():
+    global fechaHAS
+    global menciones
+    global hashtags
     f = open('bb.dot', 'w')
 
     text = """
@@ -325,17 +327,29 @@ def grafica():
         node [fontname="Helvetica,Arial,sans-serif"]
         edge [fontname="Helvetica,Arial,sans-serif"]
         a0 [shape=none label=<
-        <TABLE border="0" cellspacing="10" cellpadding="10" style="rounded" bgcolor="#9fdbe6:#7678bc" gradientangle="315">\n
-        <TR><TD bgcolor="#ca8bf5:#3e4160">Consultar hashtags</TD>
-        <TD bgcolor="#ca8bf5:#3e4160">Consultar menciones</TD></TR>"""
+        <TABLE border="0" cellspacing="10" cellpadding="10" style="rounded" bgcolor="#9fdbe6:#7678bc" gradientangle="315">\n"""
 
+    text += """<TR>\n"""
+    text += """<TD bgcolor="#ca8bf5:#3e4160">Consultar hashtags</TD>"""
+    text += """<TD bgcolor="#ca8bf5:#3e4160">"""+ str("Fecha: " + fechaHAS)+"""</TD>\n"""
+    for i in range(len(hashtags)):
+        text += """<TD bgcolor="#ca8bf5:#3e4160">"""+ str(hashtags[i])+"""</TD>\n"""
+    text += """</TR>\n"""
+    text += """<TR>\n"""
+
+    text += """<TD bgcolor="#ca8bf5:#3e4160">Consultar menciones</TD>"""
+    text += """<TD bgcolor="#ca8bf5:#3e4160">"""+ str("Fecha: " + fechaHAS)+"""</TD>\n"""
+    for i in range(len(menciones)):
+        text += """<TD bgcolor="#ca8bf5:#3e4160">"""+ str(menciones[i])+"""</TD>\n"""
+    text += """</TR>\n"""
     text += """</TABLE>>];
                 }\n"""
     f.write(text) 
     f.close()
     os.environ["PATH"] += os.pathsep + 'C:\Program Files\Graphviz\bin'
-    os.system('dot -Tpng bb.dot -o partedjango\myapp\static\grafo.png')
-    print("Terminado")        
+    #os.system('dot -Tpng bb.dot -o partedjango\myapp\static\grafo.png')      
+    os.system('dot -Tpng bb.dot -o grafo.png') 
+
 
 if __name__ == "__main__":
     app.run(threaded=True, port=5000, debug=True)
