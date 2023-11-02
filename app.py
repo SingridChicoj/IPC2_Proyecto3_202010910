@@ -12,6 +12,8 @@ global fecha
 global texto
 global positivos
 global negativos
+global hashtags
+global menciones
 global Chashtags
 global Cmenciones
 global fechaHAS
@@ -21,6 +23,8 @@ fecha = []
 texto = []
 positivos = []
 negativos = []
+hashtags = []
+menciones = []
 Chashtags = 0
 Cmenciones = 0
 fechaHAS = ""
@@ -113,16 +117,17 @@ def consultarHas():
     global texto
     global Chashtags
     global fechaHAS
+    global hashtags
 
     fechaHAS = request.args.get('fecha')
-    datos = []
+    hashtags = []
     buffer = ""
     state = 0
     Chashtags = 0
+    contador = 1
 
     for i in range(len(fecha)):
         if fecha[i].get('fecha') == fechaHAS:
-            datos.append(texto[i].get('texto'))
             for c in texto[i].get('texto'):
                 if state == 0:
                     if c == "#":
@@ -136,41 +141,77 @@ def consultarHas():
                     else:
                         buffer += c
                         state = 0
-                        if buffer == buffer:
+                        if hashtags:
+                            for i in range(len(hashtags)):
+                                if hashtags[i].get('hashtag') == buffer:
+                                    if buffer == "":
+                                        continue
+                                    else:
+                                        contador = int(hashtags[i].get('cantidad'))
+                                        contador += 1
+                                        hashtags[i] = {'hashtag': buffer, 'cantidad': contador}
+                                        buffer = ""
+                                        contador = 1
+                                        continue
+                        if buffer == "":
+                            continue
+                        else:
+                            hashtags.append({'hashtag': buffer, 'cantidad': contador})
+                            buffer = ""
+                            contador = 1
                             Chashtags += 1
-                        continue
-    return jsonify(buffer)
+                            continue
+    return jsonify(hashtags)
 
 @app.route('/consultarMenc', methods=['GET'])
 def consultarMenc():
     global fecha
     global texto
     global Cmenciones
+    global menciones
 
     fechaHAS = request.args.get('fecha')
-    datos = []
-    menciones = ""
+    menciones = []
+    buffer = ""
     state = 0
     Cmenciones = 0
+    contador = 1
     
     for i in range(len(fecha)):
         if fecha[i].get('fecha') == fechaHAS:
-            datos.append(texto[i].get('texto'))
             for c in texto[i].get('texto'):
                 if state == 0:
                     if c == "@":
-                        menciones += c
+                        buffer += c
                         state = 1
                         Cmenciones += 1
                         continue
                 if state == 1:
                     if c != " ":
-                        menciones += c
+                        buffer += c
                         continue
                     else:
-                        menciones += c
+                        buffer += c
                         state = 0
-                        continue
+                        if menciones:
+                            for i in range(len(menciones)):
+                                if menciones[i].get('Arroba') == buffer:
+                                    if buffer == "":
+                                        continue
+                                    else:
+                                        contador = int(menciones[i].get('cantidad'))
+                                        contador += 1
+                                        menciones[i] = {'menciones': buffer, 'cantidad': contador}
+                                        buffer = ""
+                                        contador = 1
+                                        continue
+                        if buffer == "":
+                            continue
+                        else:
+                            menciones.append({'Menciones': buffer, 'cantidad': contador})
+                            buffer = ""
+                            contador = 1
+                            continue
     return jsonify(menciones)
 
 @app.route('/consultarSentimientos', methods=['GET'])
@@ -293,7 +334,7 @@ def grafica():
     f.write(text) 
     f.close()
     os.environ["PATH"] += os.pathsep + 'C:\Program Files\Graphviz\bin'
-    os.system('dot -Tpng bb.dot -o static\grafo.png')
+    os.system('dot -Tpng bb.dot -o partedjango\myapp\static\grafo.png')
     print("Terminado")        
 
 if __name__ == "__main__":

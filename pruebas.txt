@@ -62,3 +62,41 @@ def upload_file():
     else:
         return jsonify({"message": "No se encontraron mensajes en el archivo XML"})
 '''
+
+
+
+for i in range(len(fecha)):
+        if fecha[i].get('fecha') == fechaHAS:
+            for c in texto[i].get('texto'):
+                if state == 0:
+                    if c == "#":
+                        buffer += c
+                        state = 1
+                        continue
+                if state == 1:
+                    if c != "#":
+                        buffer += c
+                        continue
+                    else:
+                        buffer += c
+                        state = 0
+                        if hashtags:
+                            for i in range(len(hashtags)):
+                                if hashtags[i].get('hashtag') == buffer:
+                                    if buffer == "":
+                                        continue
+                                    else:
+                                        contador = int(hashtags[i].get('cantidad'))
+                                        contador += 1
+                                        hashtags[i] = {'hashtag': buffer, 'cantidad': contador}
+                                        buffer = ""
+                                        contador = 1
+                                        continue
+                        if buffer == "":
+                            continue
+                        else:
+                            hashtags.append({'hashtag': buffer, 'cantidad': contador})
+                            buffer = ""
+                            contador = 1
+                            Chashtags += 1
+                            continue
